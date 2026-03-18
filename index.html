@@ -169,11 +169,18 @@
       border-radius: 8px;
     }
 
-    .empty-message {
+    .empty-message,
+    .loading-message,
+    .error-message {
       padding: 30px 20px;
       text-align: center;
       color: #555;
       font-size: 1rem;
+      grid-column: 1 / -1;
+    }
+
+    .error-message {
+      color: #b00020;
     }
 
     @media (max-width: 768px) {
@@ -272,7 +279,9 @@
     </select>
   </div>
 
-  <div class="catalog" id="catalog"></div>
+  <div class="catalog" id="catalog">
+    <div class="loading-message">Loading products...</div>
+  </div>
 
   <div class="image-modal" id="imageModal">
     <div class="close-hint">Tap anywhere to close</div>
@@ -281,36 +290,9 @@
 
   <script>
     const whatsappNumber = "918074656528";
+    const sheetUrl = "https://opensheet.elk.sh/1gTommr2PH9eiEEdX1aCxSdVJ1RyN6aj07UsFIqu6jj8/products";
 
-    const products = [
-      {
-        id: "P001",
-        name: "Premium T-shirt",
-        category: "T-shirt",
-        price: "799",
-        image: "images/p001.jpeg",
-        description: "test",
-        stock: "available"
-      },
-      {
-        id: "P002",
-        name: "Premium T-shirt",
-        category: "T-shirt",
-        price: "799",
-        image: "images/p002.jpeg",
-        description: "test",
-        stock: "available"
-      },
-      {
-        id: "P003",
-        name: "Premium T-shirt",
-        category: "T-shirt",
-        price: "799",
-        image: "images/p003.jpeg",
-        description: "test",
-        stock: "available"
-      }
-    ];
+    let products = [];
 
     const catalog = document.getElementById("catalog");
     const searchInput = document.getElementById("searchInput");
@@ -318,8 +300,24 @@
     const imageModal = document.getElementById("imageModal");
     const modalImage = document.getElementById("modalImage");
 
+    function normalizeProducts(rows) {
+      return rows
+        .filter(row => (row.status || "active").toLowerCase() !== "inactive")
+        .map(row => ({
+          id: row.id || "",
+          name: row.name || "",
+          category: row.category || "",
+          price: row.price || "",
+          image: row.image || "",
+          description: row.description || "",
+          stock: row.stock || "",
+          whatsapp_text: row.whatsapp_text || ""
+        }));
+    }
+
     function populateCategories() {
-      const categories = [...new Set(products.map(p => p.category))];
+      categoryFilter.innerHTML = '<option value="all">All Categories</option>';
+      const categories = [...new Set(products.map(p => p.category).filter(Boolean))];
       categories.forEach(cat => {
         const option = document.createElement("option");
         option.value = cat;
@@ -336,10 +334,10 @@
 
       const filtered = products.filter(product => {
         const matchesSearch =
-          product.name.toLowerCase().includes(searchText) ||
-          product.description.toLowerCase().includes(searchText) ||
-          product.id.toLowerCase().includes(searchText) ||
-          product.category.toLowerCase().includes(searchText);
+          (product.name || "").toLowerCase().includes(searchText) ||
+          (product.description || "").toLowerCase().includes(searchText) ||
+          (product.id || "").toLowerCase().includes(searchText) ||
+          (product.category || "").toLowerCase().includes(searchText);
 
         const matchesCategory =
           selectedCategory === "all" || product.category === selectedCategory;
@@ -354,8 +352,11 @@
 
       filtered.forEach(product => {
         const message = encodeURIComponent(
-          `Hi, I want to order:\nProduct: ${product.name}\nCode: ${product.id}\nPrice: ₹${product.price}`
+          product.whatsapp_text
+            ? `${product.whatsapp_text}\nProduct: ${product.name}\nCode: ${product.id}\nPrice: ₹${product.price}`
+            : `Hi, I want to order:\nProduct: ${product.name}\nCode: ${product.id}\nPrice: ₹${product.price}`
         );
+
         const waLink = `https://wa.me/${whatsappNumber}?text=${message}`;
 
         const card = document.createElement("div");
@@ -386,6 +387,24 @@
       document.body.style.overflow = "";
     }
 
+    async function loadProducts() {
+      try {
+        const response = await fetch(sheetUrl);
+        if (!response.ok) {
+          throw new Error("Could not load sheet data");
+        }
+
+        const rows = await response.json();
+        products = normalizeProducts(rows);
+
+        populateCategories();
+        renderProducts();
+      } catch (error) {
+        catalog.innerHTML = '<div class="error-message">Could not load products. Please check sheet setup.</div>';
+        console.error(error);
+      }
+    }
+
     imageModal.addEventListener("click", closeImageModal);
 
     document.addEventListener("keydown", function(event) {
@@ -397,8 +416,7 @@
     searchInput.addEventListener("input", renderProducts);
     categoryFilter.addEventListener("change", renderProducts);
 
-    populateCategories();
-    renderProducts();
+    loadProducts();
   </script>
 
 </body>
