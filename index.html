@@ -9,6 +9,10 @@
       box-sizing: border-box;
     }
 
+    html {
+      scroll-behavior: smooth;
+    }
+
     body {
       font-family: Arial, sans-serif;
       margin: 0;
@@ -44,22 +48,44 @@
       flex-wrap: wrap;
       gap: 10px;
       justify-content: center;
+      align-items: center;
       padding: 14px;
       background: white;
       position: sticky;
       top: 0;
-      z-index: 10;
+      z-index: 20;
       box-shadow: 0 2px 5px rgba(0,0,0,0.08);
     }
 
-    input, select {
+    input, select, button {
       padding: 12px 14px;
       font-size: 16px;
-      width: 280px;
-      max-width: 100%;
       border: 1px solid #ccc;
       border-radius: 10px;
       background: #fff;
+    }
+
+    input, select {
+      width: 280px;
+      max-width: 100%;
+    }
+
+    button {
+      cursor: pointer;
+    }
+
+    .view-all-btn {
+      background: #1f2937;
+      color: white;
+      border: none;
+      display: none;
+    }
+
+    .result-info {
+      width: 100%;
+      text-align: center;
+      font-size: 14px;
+      color: #555;
     }
 
     .catalog {
@@ -75,6 +101,7 @@
       border-radius: 16px;
       overflow: hidden;
       box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+      scroll-margin-top: 120px;
     }
 
     .image-wrap {
@@ -100,6 +127,17 @@
 
     .image-wrap:hover img {
       transform: scale(1.03);
+    }
+
+    .image-count-badge {
+      position: absolute;
+      bottom: 10px;
+      right: 10px;
+      background: rgba(0,0,0,0.65);
+      color: white;
+      font-size: 12px;
+      padding: 6px 8px;
+      border-radius: 999px;
     }
 
     .image-fallback {
@@ -132,6 +170,7 @@
       color: #444;
       margin-bottom: 8px;
       line-height: 1.4;
+      min-height: 22px;
     }
 
     .product-id {
@@ -139,6 +178,12 @@
       color: #555;
       margin-bottom: 8px;
       font-weight: bold;
+    }
+
+    .sizes-text {
+      font-size: 0.9rem;
+      color: #666;
+      margin-bottom: 8px;
     }
 
     .stock {
@@ -159,13 +204,16 @@
       font-size: 1rem;
       min-height: 44px;
       line-height: 20px;
+      border: none;
+      width: 100%;
     }
 
     .btn:active {
       transform: scale(0.98);
     }
 
-    .image-modal {
+    .modal,
+    .slideshow-modal {
       display: none;
       position: fixed;
       z-index: 9999;
@@ -178,26 +226,123 @@
       padding: 16px;
     }
 
-    .image-modal img {
-      max-width: 100%;
-      max-height: 88vh;
-      border-radius: 12px;
-      box-shadow: 0 4px 20px rgba(0,0,0,0.4);
-    }
-
-    .image-modal.active {
+    .modal.active,
+    .slideshow-modal.active {
       display: flex;
     }
 
-    .close-hint {
-      position: absolute;
-      top: 14px;
-      right: 18px;
-      color: white;
+    .modal-box {
+      background: white;
+      width: 100%;
+      max-width: 420px;
+      border-radius: 16px;
+      padding: 20px;
+      position: relative;
+    }
+
+    .modal-box h3 {
+      margin-top: 0;
+      margin-bottom: 12px;
+    }
+
+    .modal-box p {
+      margin-top: 0;
+      color: #555;
       font-size: 14px;
-      background: rgba(255,255,255,0.12);
-      padding: 8px 10px;
-      border-radius: 8px;
+    }
+
+    .modal-box input {
+      width: 100%;
+      margin-bottom: 12px;
+    }
+
+    .modal-actions {
+      display: flex;
+      gap: 10px;
+    }
+
+    .modal-actions button {
+      flex: 1;
+      border: none;
+      border-radius: 10px;
+      padding: 12px;
+      font-weight: bold;
+    }
+
+    .cancel-btn {
+      background: #e5e7eb;
+      color: #111;
+    }
+
+    .continue-btn {
+      background: #25D366;
+      color: white;
+    }
+
+    .slideshow-content {
+      position: relative;
+      width: 100%;
+      max-width: 950px;
+      text-align: center;
+    }
+
+    .slideshow-image-box {
+      background: rgba(255,255,255,0.05);
+      border-radius: 16px;
+      padding: 16px;
+      cursor: pointer;
+    }
+
+    .slideshow-content img {
+      max-width: 100%;
+      max-height: 72vh;
+      border-radius: 12px;
+      object-fit: contain;
+    }
+
+    .slide-caption {
+      color: white;
+      margin-top: 12px;
+      font-size: 15px;
+      line-height: 1.5;
+    }
+
+    .slide-hint {
+      color: #ddd;
+      margin-top: 8px;
+      font-size: 13px;
+    }
+
+    .slide-nav,
+    .slide-close {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      border: none;
+      background: rgba(255,255,255,0.15);
+      color: white;
+      font-size: 24px;
+      width: 48px;
+      height: 48px;
+      border-radius: 999px;
+      cursor: pointer;
+    }
+
+    .slide-nav.prev {
+      left: -60px;
+    }
+
+    .slide-nav.next {
+      right: -60px;
+    }
+
+    .slide-close {
+      top: -18px;
+      right: -18px;
+      transform: none;
+      font-size: 18px;
+      width: 42px;
+      height: 42px;
     }
 
     .empty-message,
@@ -212,6 +357,11 @@
 
     .error-message {
       color: #b00020;
+    }
+
+    .highlight-card {
+      box-shadow: 0 0 0 3px rgba(37, 211, 102, 0.45), 0 8px 20px rgba(0,0,0,0.12);
+      transition: box-shadow 0.3s ease;
     }
 
     @media (max-width: 768px) {
@@ -233,7 +383,7 @@
         padding: 12px;
       }
 
-      input, select {
+      input, select, .view-all-btn {
         width: 100%;
       }
 
@@ -259,16 +409,17 @@
         font-size: 1.2rem;
       }
 
-      .btn {
-        width: 100%;
-        text-align: center;
+      .slide-nav.prev {
+        left: 8px;
       }
 
-      .close-hint {
-        top: 10px;
-        right: 10px;
-        font-size: 13px;
-        padding: 7px 9px;
+      .slide-nav.next {
+        right: 8px;
+      }
+
+      .slide-close {
+        top: 8px;
+        right: 8px;
       }
     }
 
@@ -291,7 +442,8 @@
 
       .desc,
       .stock,
-      .product-id {
+      .product-id,
+      .sizes-text {
         font-size: 0.95rem;
       }
     }
@@ -305,51 +457,130 @@
   </header>
 
   <div class="topbar">
-    <input type="text" id="searchInput" placeholder="Search products..." />
+    <input type="text" id="searchInput" placeholder="Search products, tags, code..." />
     <select id="categoryFilter">
       <option value="all">All Categories</option>
     </select>
+    <button class="view-all-btn" id="viewAllBtn" type="button">View All</button>
+    <div class="result-info" id="resultInfo"></div>
   </div>
 
   <div class="catalog" id="catalog">
     <div class="loading-message">Loading products...</div>
   </div>
 
-  <div class="image-modal" id="imageModal">
-    <div class="close-hint">Tap anywhere to close</div>
-    <img id="modalImage" src="" alt="Full Product Image">
+  <div class="modal" id="sizeModal">
+    <div class="modal-box" onclick="event.stopPropagation()">
+      <h3>Select Size</h3>
+      <p id="sizeHelpText">Enter your preferred size.</p>
+      <input type="text" id="sizeInput" placeholder="Example: S, M, L, XL" />
+      <div class="modal-actions">
+        <button class="cancel-btn" type="button" id="cancelSizeBtn">Cancel</button>
+        <button class="continue-btn" type="button" id="continueSizeBtn">Continue to WhatsApp</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="slideshow-modal" id="slideshowModal">
+    <div class="slideshow-content" onclick="event.stopPropagation()">
+      <button class="slide-close" type="button" id="closeSlideshowBtn">✕</button>
+      <button class="slide-nav prev" type="button" id="prevSlideBtn">‹</button>
+      <div class="slideshow-image-box" id="slideshowImageBox">
+        <img id="slideshowImage" src="" alt="Product Image">
+        <div class="slide-caption" id="slideCaption"></div>
+        <div class="slide-hint">Tap image to open that product</div>
+      </div>
+      <button class="slide-nav next" type="button" id="nextSlideBtn">›</button>
+    </div>
   </div>
 
   <script>
-    const whatsappNumber = "919014714802";
+    const whatsappNumber = "918074656528";
     const sheetUrl = "https://opensheet.elk.sh/1gTommr2PH9eiEEdX1aCxSdVJ1RyN6aj07UsFIqu6jj8/products";
 
     let products = [];
+    let filteredProducts = [];
+    let currentOrderProduct = null;
+    let slideshowImages = [];
+    let currentSlideIndex = 0;
 
     const catalog = document.getElementById("catalog");
     const searchInput = document.getElementById("searchInput");
     const categoryFilter = document.getElementById("categoryFilter");
-    const imageModal = document.getElementById("imageModal");
-    const modalImage = document.getElementById("modalImage");
+    const viewAllBtn = document.getElementById("viewAllBtn");
+    const resultInfo = document.getElementById("resultInfo");
+
+    const sizeModal = document.getElementById("sizeModal");
+    const sizeInput = document.getElementById("sizeInput");
+    const sizeHelpText = document.getElementById("sizeHelpText");
+    const cancelSizeBtn = document.getElementById("cancelSizeBtn");
+    const continueSizeBtn = document.getElementById("continueSizeBtn");
+
+    const slideshowModal = document.getElementById("slideshowModal");
+    const slideshowImage = document.getElementById("slideshowImage");
+    const slideCaption = document.getElementById("slideCaption");
+    const slideshowImageBox = document.getElementById("slideshowImageBox");
+    const prevSlideBtn = document.getElementById("prevSlideBtn");
+    const nextSlideBtn = document.getElementById("nextSlideBtn");
+    const closeSlideshowBtn = document.getElementById("closeSlideshowBtn");
+
+    function cleanValue(value) {
+      return (value || "").toString().trim();
+    }
+
+    function normalizeCategory(category) {
+      return cleanValue(category) || "Mixed";
+    }
+
+    function normalizeShowPrice(showPrice) {
+      return cleanValue(showPrice).toUpperCase() === "Y";
+    }
+
+    function getDisplayPrice(product) {
+      if (normalizeShowPrice(product.show_price) && cleanValue(product.price)) {
+        return `₹${product.price}`;
+      }
+      return "Ask me";
+    }
+
+    function getAllImages(row) {
+      return [
+        cleanValue(row.image),
+        cleanValue(row.image2),
+        cleanValue(row.image3),
+        cleanValue(row.image4),
+        cleanValue(row.image5)
+      ].filter(Boolean);
+    }
 
     function normalizeProducts(rows) {
       return rows
-        .filter(row => (row.status || "active").toLowerCase() !== "inactive")
+        .filter(row => cleanValue(row.status).toLowerCase() !== "inactive")
         .map(row => ({
-          id: row.id || "",
-          name: row.name || "",
-          category: row.category || "",
-          price: row.price || "",
-          image: row.image || "",
-          description: row.description || "",
-          stock: row.stock || "",
-          whatsapp_text: row.whatsapp_text || ""
-        }));
+          tags: cleanValue(row.tags),
+          id: cleanValue(row.id),
+          name: cleanValue(row.name),
+          category: normalizeCategory(row.category),
+          available_sizes: cleanValue(row.available_sizes),
+          price: cleanValue(row.price),
+          show_price: cleanValue(row.show_price),
+          image: cleanValue(row.image),
+          image2: cleanValue(row.image2),
+          image3: cleanValue(row.image3),
+          image4: cleanValue(row.image4),
+          image5: cleanValue(row.image5),
+          description: cleanValue(row.description),
+          stock: cleanValue(row.stock),
+          status: cleanValue(row.status),
+          whatsapp_text: cleanValue(row.whatsapp_text),
+          images: getAllImages(row)
+        }))
+        .filter(product => product.name || product.id);
     }
 
     function populateCategories() {
       categoryFilter.innerHTML = '<option value="all">All Categories</option>';
-      const categories = [...new Set(products.map(p => p.category).filter(Boolean))];
+      const categories = [...new Set(products.map(p => p.category).filter(Boolean))].sort();
       categories.forEach(cat => {
         const option = document.createElement("option");
         option.value = cat;
@@ -358,60 +589,78 @@
       });
     }
 
-    function renderProducts() {
+    function productMatchesSearch(product, searchText) {
+      if (!searchText) return true;
+
+      const haystack = [
+        product.tags,
+        product.id,
+        product.name,
+        product.category,
+        product.available_sizes,
+        product.description,
+        product.stock
+      ].join(" ").toLowerCase();
+
+      return haystack.includes(searchText);
+    }
+
+    function getFilteredProducts() {
       const searchText = searchInput.value.toLowerCase().trim();
       const selectedCategory = categoryFilter.value;
 
-      catalog.innerHTML = "";
-
-      const filtered = products.filter(product => {
-        const matchesSearch =
-          (product.name || "").toLowerCase().includes(searchText) ||
-          (product.description || "").toLowerCase().includes(searchText) ||
-          (product.id || "").toLowerCase().includes(searchText) ||
-          (product.category || "").toLowerCase().includes(searchText);
-
-        const matchesCategory =
-          selectedCategory === "all" || product.category === selectedCategory;
-
+      return products.filter(product => {
+        const matchesSearch = productMatchesSearch(product, searchText);
+        const matchesCategory = selectedCategory === "all" || product.category === selectedCategory;
         return matchesSearch && matchesCategory;
       });
+    }
 
-      if (filtered.length === 0) {
+    function updateResultInfo() {
+      const count = filteredProducts.length;
+      resultInfo.textContent = count > 0 ? `${count} product${count > 1 ? "s" : ""} found` : "No products found";
+      viewAllBtn.style.display = count > 0 ? "inline-block" : "none";
+    }
+
+    function renderProducts() {
+      filteredProducts = getFilteredProducts();
+      catalog.innerHTML = "";
+
+      updateResultInfo();
+
+      if (filteredProducts.length === 0) {
         catalog.innerHTML = '<div class="empty-message">No products found.</div>';
         return;
       }
 
-      filtered.forEach(product => {
-        const message = encodeURIComponent(
-          product.whatsapp_text
-            ? `${product.whatsapp_text}\nProduct: ${product.name}\nCode: ${product.id}\nPrice: ₹${product.price}`
-            : `Hi, I want to order:\nProduct: ${product.name}\nCode: ${product.id}\nPrice: ₹${product.price}`
-        );
-
-        const waLink = `https://wa.me/${whatsappNumber}?text=${message}`;
+      filteredProducts.forEach((product, index) => {
+        const displayPrice = getDisplayPrice(product);
+        const primaryImage = product.images[0] || "";
+        const imageCount = product.images.length;
+        const availableSizesText = product.available_sizes ? `Available sizes: ${product.available_sizes}` : "";
 
         const card = document.createElement("div");
         card.className = "card";
-
-        const safeImage = product.image ? product.image.replace(/'/g, "\\'") : "";
+        card.id = `product-${product.id || index}`;
 
         card.innerHTML = `
-          <div class="image-wrap" ${safeImage ? `onclick="openImageModal('${safeImage}')"` : ""}>
+          <div class="image-wrap" ${primaryImage ? `onclick="openProductSlideshow(${index})"` : ""}>
             ${
-              product.image
-                ? `<img src="${product.image}" alt="${product.name}" onerror="handleImageError(this)">`
+              primaryImage
+                ? `<img src="${primaryImage}" alt="${product.name}" onerror="handleImageError(this)">`
                 : `<div class="image-fallback" style="display:block;">No image available</div>`
             }
             <div class="image-fallback">Image not available</div>
+            ${imageCount > 1 ? `<div class="image-count-badge">${imageCount} images</div>` : ""}
           </div>
           <div class="card-content">
-            <h3>${product.name}</h3>
-            <div class="price">₹${product.price}</div>
-            <div class="desc">${product.description}</div>
-            <div class="product-id">Product ID: ${product.id}</div>
-            <div class="stock">${product.stock}</div>
-            <a class="btn" href="${waLink}" target="_blank" rel="noopener noreferrer">Order on WhatsApp</a>
+            <h3>${product.name || "Untitled Product"}</h3>
+            <div class="price">${displayPrice}</div>
+            <div class="desc">${product.description || ""}</div>
+            <div class="product-id">Product ID: ${product.id || "N/A"}</div>
+            ${availableSizesText ? `<div class="sizes-text">${availableSizesText}</div>` : ""}
+            <div class="stock">${product.stock || ""}</div>
+            <button class="btn" type="button" onclick="openSizeModal(${index})">Order on WhatsApp</button>
           </div>
         `;
         catalog.appendChild(card);
@@ -428,16 +677,130 @@
       img.parentElement.style.cursor = "default";
     }
 
-    function openImageModal(imageSrc) {
-      modalImage.src = imageSrc;
-      imageModal.classList.add("active");
+    function openSizeModal(index) {
+      currentOrderProduct = filteredProducts[index];
+      sizeInput.value = "";
+      sizeHelpText.textContent = currentOrderProduct.available_sizes
+        ? `Available sizes: ${currentOrderProduct.available_sizes}`
+        : "Enter your preferred size.";
+      sizeModal.classList.add("active");
+      document.body.style.overflow = "hidden";
+      setTimeout(() => sizeInput.focus(), 50);
+    }
+
+    function closeSizeModal() {
+      sizeModal.classList.remove("active");
+      document.body.style.overflow = "";
+    }
+
+    function continueToWhatsApp() {
+      if (!currentOrderProduct) return;
+
+      const enteredSize = sizeInput.value.trim();
+      const displayPrice = getDisplayPrice(currentOrderProduct);
+
+      const message = encodeURIComponent(
+        `${currentOrderProduct.whatsapp_text || "Hi, I want to order this product"}\n` +
+        `Product: ${currentOrderProduct.name || ""}\n` +
+        `Product ID: ${currentOrderProduct.id || ""}\n` +
+        `Category: ${currentOrderProduct.category || "Mixed"}\n` +
+        `Stock: ${currentOrderProduct.stock || "Available"}\n` +
+        `Price: ${displayPrice}\n` +
+        `Size: ${enteredSize || "Not specified"}`
+      );
+
+      window.open(`https://wa.me/${whatsappNumber}?text=${message}`, "_blank", "noopener,noreferrer");
+      closeSizeModal();
+    }
+
+    function buildSlideshowItemsFromProduct(product, filteredIndex) {
+      return product.images.map((img, idx) => ({
+        src: img,
+        caption:
+          `${product.name || "Product"}${product.id ? ` | ${product.id}` : ""}` +
+          `${product.images.length > 1 ? ` | Image ${idx + 1} of ${product.images.length}` : ""}`,
+        productId: product.id || "",
+        filteredIndex
+      }));
+    }
+
+    function buildSlideshowItemsFromFilteredProducts() {
+      const items = [];
+      filteredProducts.forEach((product, filteredIndex) => {
+        product.images.forEach((img, idx) => {
+          items.push({
+            src: img,
+            caption:
+              `${product.name || "Product"}${product.id ? ` | ${product.id}` : ""}` +
+              `${product.images.length > 1 ? ` | Image ${idx + 1} of ${product.images.length}` : ""}`,
+            productId: product.id || "",
+            filteredIndex
+          });
+        });
+      });
+      return items;
+    }
+
+    function openProductSlideshow(index) {
+      const product = filteredProducts[index];
+      slideshowImages = buildSlideshowItemsFromProduct(product, index);
+      currentSlideIndex = 0;
+      openSlideshow();
+    }
+
+    function openFilteredSlideshow() {
+      slideshowImages = buildSlideshowItemsFromFilteredProducts();
+      currentSlideIndex = 0;
+      openSlideshow();
+    }
+
+    function openSlideshow() {
+      if (!slideshowImages.length) return;
+      updateSlideshow();
+      slideshowModal.classList.add("active");
       document.body.style.overflow = "hidden";
     }
 
-    function closeImageModal() {
-      imageModal.classList.remove("active");
-      modalImage.src = "";
+    function closeSlideshow() {
+      slideshowModal.classList.remove("active");
       document.body.style.overflow = "";
+    }
+
+    function updateSlideshow() {
+      if (!slideshowImages.length) return;
+      const current = slideshowImages[currentSlideIndex];
+      slideshowImage.src = current.src;
+      slideCaption.textContent = current.caption;
+    }
+
+    function showPrevSlide() {
+      if (!slideshowImages.length) return;
+      currentSlideIndex = (currentSlideIndex - 1 + slideshowImages.length) % slideshowImages.length;
+      updateSlideshow();
+    }
+
+    function showNextSlide() {
+      if (!slideshowImages.length) return;
+      currentSlideIndex = (currentSlideIndex + 1) % slideshowImages.length;
+      updateSlideshow();
+    }
+
+    function goToCurrentSlideProduct() {
+      if (!slideshowImages.length) return;
+      const current = slideshowImages[currentSlideIndex];
+      const targetId = current.productId ? `product-${current.productId}` : null;
+      const targetCard = targetId ? document.getElementById(targetId) : null;
+
+      closeSlideshow();
+
+      if (targetCard) {
+        targetCard.scrollIntoView({ behavior: "smooth", block: "center" });
+        targetCard.classList.add("highlight-card");
+
+        setTimeout(() => {
+          targetCard.classList.remove("highlight-card");
+        }, 1800);
+      }
     }
 
     async function loadProducts() {
@@ -458,18 +821,45 @@
       }
     }
 
-    imageModal.addEventListener("click", closeImageModal);
+    sizeModal.addEventListener("click", closeSizeModal);
+    cancelSizeBtn.addEventListener("click", closeSizeModal);
+    continueSizeBtn.addEventListener("click", continueToWhatsApp);
 
-    document.addEventListener("keydown", function(event) {
-      if (event.key === "Escape" && imageModal.classList.contains("active")) {
-        closeImageModal();
-      }
-    });
+    slideshowModal.addEventListener("click", closeSlideshow);
+    closeSlideshowBtn.addEventListener("click", closeSlideshow);
+    prevSlideBtn.addEventListener("click", showPrevSlide);
+    nextSlideBtn.addEventListener("click", showNextSlide);
+    slideshowImageBox.addEventListener("click", goToCurrentSlideProduct);
+
+    viewAllBtn.addEventListener("click", openFilteredSlideshow);
 
     searchInput.addEventListener("input", renderProducts);
     categoryFilter.addEventListener("change", renderProducts);
 
+    sizeInput.addEventListener("keydown", function(event) {
+      if (event.key === "Enter") {
+        continueToWhatsApp();
+      }
+    });
+
+    document.addEventListener("keydown", function(event) {
+      if (sizeModal.classList.contains("active") && event.key === "Escape") {
+        closeSizeModal();
+      }
+
+      if (slideshowModal.classList.contains("active")) {
+        if (event.key === "Escape") closeSlideshow();
+        if (event.key === "ArrowLeft") showPrevSlide();
+        if (event.key === "ArrowRight") showNextSlide();
+        if (event.key === "Enter") goToCurrentSlideProduct();
+      }
+    });
+
     loadProducts();
+
+    window.handleImageError = handleImageError;
+    window.openSizeModal = openSizeModal;
+    window.openProductSlideshow = openProductSlideshow;
   </script>
 
 </body>
