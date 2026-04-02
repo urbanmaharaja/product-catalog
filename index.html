@@ -1,866 +1,249 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Urban Maharaja Store</title>
-  <style>
-    * {
-      box-sizing: border-box;
-    }
-
-    html {
-      scroll-behavior: smooth;
-    }
-
-    body {
-      font-family: Arial, sans-serif;
-      margin: 0;
-      padding: 0;
-      background: #f5f5f5;
-      color: #222;
-    }
-
-    header {
-      background:
-        linear-gradient(rgba(0, 0, 0, 0.45), rgba(0, 0, 0, 0.45)),
-        url("images/banner.jpeg") center/cover no-repeat;
-      color: white;
-      padding: 60px 16px;
-      text-align: center;
-    }
-
-    header h1 {
-      margin: 0;
-      font-size: 2.4rem;
-      line-height: 1.2;
-      text-shadow: 0 2px 8px rgba(0,0,0,0.6);
-    }
-
-    header p {
-      margin: 12px 0 0;
-      font-size: 1.1rem;
-      text-shadow: 0 2px 6px rgba(0,0,0,0.6);
-    }
-
-    .topbar {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 10px;
-      justify-content: center;
-      align-items: center;
-      padding: 14px;
-      background: white;
-      position: sticky;
-      top: 0;
-      z-index: 20;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.08);
-    }
-
-    input, select, button {
-      padding: 12px 14px;
-      font-size: 16px;
-      border: 1px solid #ccc;
-      border-radius: 10px;
-      background: #fff;
-    }
-
-    input, select {
-      width: 280px;
-      max-width: 100%;
-    }
-
-    button {
-      cursor: pointer;
-    }
-
-    .view-all-btn {
-      background: #1f2937;
-      color: white;
-      border: none;
-      display: none;
-    }
-
-    .result-info {
-      width: 100%;
-      text-align: center;
-      font-size: 14px;
-      color: #555;
-    }
-
-    .catalog {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(280px, 360px));
-      gap: 18px;
-      padding: 18px;
-      justify-content: center;
-    }
-
-    .card {
-      background: white;
-      border-radius: 16px;
-      overflow: hidden;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.08);
-      scroll-margin-top: 120px;
-    }
-
-    .image-wrap {
-      width: 100%;
-      height: 320px;
-      background: #f2f2f2;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      overflow: hidden;
-      cursor: pointer;
-      position: relative;
-    }
-
-    .card img {
-      max-width: 100%;
-      max-height: 100%;
-      width: auto;
-      height: auto;
-      display: block;
-      transition: transform 0.25s ease;
-    }
-
-    .image-wrap:hover img {
-      transform: scale(1.03);
-    }
-
-    .image-count-badge {
-      position: absolute;
-      bottom: 10px;
-      right: 10px;
-      background: rgba(0,0,0,0.65);
-      color: white;
-      font-size: 12px;
-      padding: 6px 8px;
-      border-radius: 999px;
-    }
-
-    .image-fallback {
-      color: #777;
-      font-size: 0.95rem;
-      text-align: center;
-      padding: 12px;
-      display: none;
-    }
-
-    .card-content {
-      padding: 16px;
-    }
-
-    .card h3 {
-      margin: 0 0 8px;
-      font-size: 1.5rem;
-      line-height: 1.3;
-    }
-
-    .price {
-      color: green;
-      font-weight: bold;
-      margin-bottom: 8px;
-      font-size: 1.3rem;
-    }
-
-    .desc {
-      font-size: 1rem;
-      color: #444;
-      margin-bottom: 8px;
-      line-height: 1.4;
-      min-height: 22px;
-    }
-
-    .product-id {
-      font-size: 0.95rem;
-      color: #555;
-      margin-bottom: 8px;
-      font-weight: bold;
-    }
-
-    .sizes-text {
-      font-size: 0.9rem;
-      color: #666;
-      margin-bottom: 8px;
-    }
-
-    .stock {
-      font-size: 1rem;
-      margin-bottom: 14px;
-      color: #666;
-      text-transform: capitalize;
-    }
-
-    .btn {
-      display: inline-block;
-      background: #25D366;
-      color: white;
-      padding: 12px 16px;
-      text-decoration: none;
-      border-radius: 10px;
-      font-weight: bold;
-      font-size: 1rem;
-      min-height: 44px;
-      line-height: 20px;
-      border: none;
-      width: 100%;
-    }
-
-    .btn:active {
-      transform: scale(0.98);
-    }
-
-    .modal,
-    .slideshow-modal {
-      display: none;
-      position: fixed;
-      z-index: 9999;
-      inset: 0;
-      width: 100%;
-      height: 100%;
-      background: rgba(0, 0, 0, 0.88);
-      justify-content: center;
-      align-items: center;
-      padding: 16px;
-    }
-
-    .modal.active,
-    .slideshow-modal.active {
-      display: flex;
-    }
-
-    .modal-box {
-      background: white;
-      width: 100%;
-      max-width: 420px;
-      border-radius: 16px;
-      padding: 20px;
-      position: relative;
-    }
-
-    .modal-box h3 {
-      margin-top: 0;
-      margin-bottom: 12px;
-    }
-
-    .modal-box p {
-      margin-top: 0;
-      color: #555;
-      font-size: 14px;
-    }
-
-    .modal-box input {
-      width: 100%;
-      margin-bottom: 12px;
-    }
-
-    .modal-actions {
-      display: flex;
-      gap: 10px;
-    }
-
-    .modal-actions button {
-      flex: 1;
-      border: none;
-      border-radius: 10px;
-      padding: 12px;
-      font-weight: bold;
-    }
-
-    .cancel-btn {
-      background: #e5e7eb;
-      color: #111;
-    }
-
-    .continue-btn {
-      background: #25D366;
-      color: white;
-    }
-
-    .slideshow-content {
-      position: relative;
-      width: 100%;
-      max-width: 950px;
-      text-align: center;
-    }
-
-    .slideshow-image-box {
-      background: rgba(255,255,255,0.05);
-      border-radius: 16px;
-      padding: 16px;
-      cursor: pointer;
-    }
-
-    .slideshow-content img {
-      max-width: 100%;
-      max-height: 72vh;
-      border-radius: 12px;
-      object-fit: contain;
-    }
-
-    .slide-caption {
-      color: white;
-      margin-top: 12px;
-      font-size: 15px;
-      line-height: 1.5;
-    }
-
-    .slide-hint {
-      color: #ddd;
-      margin-top: 8px;
-      font-size: 13px;
-    }
-
-    .slide-nav,
-    .slide-close {
-      position: absolute;
-      top: 50%;
-      transform: translateY(-50%);
-      border: none;
-      background: rgba(255,255,255,0.15);
-      color: white;
-      font-size: 24px;
-      width: 48px;
-      height: 48px;
-      border-radius: 999px;
-      cursor: pointer;
-    }
-
-    .slide-nav.prev {
-      left: -60px;
-    }
-
-    .slide-nav.next {
-      right: -60px;
-    }
-
-    .slide-close {
-      top: -18px;
-      right: -18px;
-      transform: none;
-      font-size: 18px;
-      width: 42px;
-      height: 42px;
-    }
-
-    .empty-message,
-    .loading-message,
-    .error-message {
-      padding: 30px 20px;
-      text-align: center;
-      color: #555;
-      font-size: 1rem;
-      grid-column: 1 / -1;
-    }
-
-    .error-message {
-      color: #b00020;
-    }
-
-    .highlight-card {
-      box-shadow: 0 0 0 3px rgba(37, 211, 102, 0.45), 0 8px 20px rgba(0,0,0,0.12);
-      transition: box-shadow 0.3s ease;
-    }
-
-    @media (max-width: 768px) {
-      header {
-        padding: 40px 12px;
-      }
-
-      header h1 {
-        font-size: 1.8rem;
-      }
-
-      header p {
-        font-size: 1rem;
-      }
-
-      .topbar {
-        flex-direction: column;
-        align-items: stretch;
-        padding: 12px;
-      }
-
-      input, select, .view-all-btn {
-        width: 100%;
-      }
-
-      .catalog {
-        grid-template-columns: 1fr;
-        padding: 12px;
-        gap: 14px;
-      }
-
-      .image-wrap {
-        height: 260px;
-      }
-
-      .card-content {
-        padding: 14px;
-      }
-
-      .card h3 {
-        font-size: 1.35rem;
-      }
-
-      .price {
-        font-size: 1.2rem;
-      }
-
-      .slide-nav.prev {
-        left: 8px;
-      }
-
-      .slide-nav.next {
-        right: 8px;
-      }
-
-      .slide-close {
-        top: 8px;
-        right: 8px;
-      }
-    }
-
-    @media (max-width: 420px) {
-      header h1 {
-        font-size: 1.4rem;
-      }
-
-      .image-wrap {
-        height: 220px;
-      }
-
-      .card h3 {
-        font-size: 1.2rem;
-      }
-
-      .price {
-        font-size: 1.1rem;
-      }
-
-      .desc,
-      .stock,
-      .product-id,
-      .sizes-text {
-        font-size: 0.95rem;
-      }
-    }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Urban Maharaja Store</title>
+
+<style>
+body{font-family:Arial;margin:0;background:#f5f5f5;}
+header{background:#000;color:#fff;text-align:center;padding:30px;}
+
+.topbar{display:flex;gap:10px;padding:10px;background:#fff;flex-wrap:wrap;position:sticky;top:0;}
+input,select,button{padding:10px;border-radius:8px;border:1px solid #ccc;}
+
+.catalog{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:15px;padding:15px;}
+
+.card{background:#fff;border-radius:12px;overflow:hidden;transition:.2s;}
+.card:hover{transform:scale(1.02);box-shadow:0 6px 18px rgba(0,0,0,0.2);}
+
+.image-wrap{aspect-ratio:1/1;position:relative;cursor:pointer;}
+.image-wrap img{width:100%;height:100%;object-fit:cover;}
+
+.badge{position:absolute;bottom:8px;right:8px;background:#000;color:#fff;padding:4px 8px;border-radius:10px;font-size:12px;}
+
+.overlay{position:absolute;top:8px;left:8px;display:flex;gap:6px;}
+.overlay button{background:#fff;border:none;border-radius:50%;width:34px;height:34px;cursor:pointer;}
+
+.card-content{padding:10px;}
+.price{color:green;font-weight:bold;}
+
+.btn{background:#25D366;color:#fff;border:none;width:100%;margin-top:6px;padding:10px;border-radius:8px;}
+
+.result{text-align:center;color:#555;}
+
+.modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.9);justify-content:center;align-items:center;z-index:9999;}
+.modal.active{display:flex;}
+
+.modal img{max-width:90%;max-height:75vh;border-radius:10px;}
+
+.arrow{position:absolute;top:50%;transform:translateY(-50%);font-size:30px;color:#fff;background:rgba(0,0,0,0.5);padding:10px;border-radius:50%;cursor:pointer;}
+.left{left:20px;} .right{right:20px;}
+
+.close{position:absolute;top:20px;right:20px;color:white;font-size:25px;cursor:pointer;}
+
+.highlight{outline:3px solid #25D366;}
+
+.sizeModal{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.6);justify-content:center;align-items:center;}
+.sizeBox{background:white;padding:20px;border-radius:12px;width:300px;}
+
+.cartBtn{position:fixed;bottom:20px;right:20px;background:#000;color:#fff;padding:14px;border-radius:50px;}
+
+</style>
 </head>
+
 <body>
 
-  <header>
-    <h1>Urban Maharaja Store</h1>
-    <p>Premium Collection | Order on WhatsApp</p>
-  </header>
+<header>
+<h2>Urban Maharaja Store</h2>
+</header>
 
-  <div class="topbar">
-    <input type="text" id="searchInput" placeholder="Search products, tags, code..." />
-    <select id="categoryFilter">
-      <option value="all">All Categories</option>
-    </select>
-    <button class="view-all-btn" id="viewAllBtn" type="button">View All</button>
-    <div class="result-info" id="resultInfo"></div>
-  </div>
+<div class="topbar">
+<select id="dateFilter">
+<option value="today">Today</option>
+<option value="week">Week</option>
+<option value="month">Month</option>
+<option value="all">All</option>
+</select>
 
-  <div class="catalog" id="catalog">
-    <div class="loading-message">Loading products...</div>
-  </div>
+<select id="categoryFilter"><option value="all">All</option></select>
 
-  <div class="modal" id="sizeModal">
-    <div class="modal-box" onclick="event.stopPropagation()">
-      <h3>Select Size</h3>
-      <p id="sizeHelpText">Enter your preferred size.</p>
-      <input type="text" id="sizeInput" placeholder="Example: S, M, L, XL" />
-      <div class="modal-actions">
-        <button class="cancel-btn" type="button" id="cancelSizeBtn">Cancel</button>
-        <button class="continue-btn" type="button" id="continueSizeBtn">Continue to WhatsApp</button>
-      </div>
-    </div>
-  </div>
+<input id="searchInput" placeholder="Search products, tags, code..." />
 
-  <div class="slideshow-modal" id="slideshowModal">
-    <div class="slideshow-content" onclick="event.stopPropagation()">
-      <button class="slide-close" type="button" id="closeSlideshowBtn">✕</button>
-      <button class="slide-nav prev" type="button" id="prevSlideBtn">‹</button>
-      <div class="slideshow-image-box" id="slideshowImageBox">
-        <img id="slideshowImage" src="" alt="Product Image">
-        <div class="slide-caption" id="slideCaption"></div>
-        <div class="slide-hint">Tap image to open that product</div>
-      </div>
-      <button class="slide-nav next" type="button" id="nextSlideBtn">›</button>
-    </div>
-  </div>
+<button onclick="viewAll()">View All</button>
+</div>
 
-  <script>
-    const whatsappNumber = "918074656528";
-    const sheetUrl = "https://opensheet.elk.sh/1gTommr2PH9eiEEdX1aCxSdVJ1RyN6aj07UsFIqu6jj8/products";
+<div class="result" id="result"></div>
 
-    let products = [];
-    let filteredProducts = [];
-    let currentOrderProduct = null;
-    let slideshowImages = [];
-    let currentSlideIndex = 0;
+<div id="catalog" class="catalog"></div>
 
-    const catalog = document.getElementById("catalog");
-    const searchInput = document.getElementById("searchInput");
-    const categoryFilter = document.getElementById("categoryFilter");
-    const viewAllBtn = document.getElementById("viewAllBtn");
-    const resultInfo = document.getElementById("resultInfo");
+<button id="cartBtn" class="cartBtn">Cart (0)</button>
 
-    const sizeModal = document.getElementById("sizeModal");
-    const sizeInput = document.getElementById("sizeInput");
-    const sizeHelpText = document.getElementById("sizeHelpText");
-    const cancelSizeBtn = document.getElementById("cancelSizeBtn");
-    const continueSizeBtn = document.getElementById("continueSizeBtn");
+<!-- SLIDESHOW -->
+<div id="modal" class="modal">
+<div class="close" onclick="closeModal()">✕</div>
+<div class="arrow left" onclick="prev()">‹</div>
+<img id="modalImg">
+<div class="arrow right" onclick="next()">›</div>
+</div>
 
-    const slideshowModal = document.getElementById("slideshowModal");
-    const slideshowImage = document.getElementById("slideshowImage");
-    const slideCaption = document.getElementById("slideCaption");
-    const slideshowImageBox = document.getElementById("slideshowImageBox");
-    const prevSlideBtn = document.getElementById("prevSlideBtn");
-    const nextSlideBtn = document.getElementById("nextSlideBtn");
-    const closeSlideshowBtn = document.getElementById("closeSlideshowBtn");
+<!-- SIZE -->
+<div id="sizeModal" class="sizeModal">
+<div class="sizeBox">
+<h3>Select Size</h3>
+<input id="sizeInput" placeholder="Example: S, M, L, XL">
+<br><br>
+<button onclick="closeSize()">Cancel</button>
+<button onclick="confirmOrder()">Continue</button>
+</div>
+</div>
 
-    function cleanValue(value) {
-      return (value || "").toString().trim();
-    }
+<script>
+const sheetUrl="https://opensheet.elk.sh/1gTommr2PH9eiEEdX1aCxSdVJ1RyN6aj07UsFIqu6jj8/products";
 
-    function normalizeCategory(category) {
-      return cleanValue(category) || "Mixed";
-    }
+let products=[],filtered=[],cart=[],wishlist=[];
+let currentImages=[],currentIndex=0,currentProduct=null,currentProductIndex=null;
 
-    function normalizeShowPrice(showPrice) {
-      return cleanValue(showPrice).toUpperCase() === "Y";
-    }
+function clean(v){return (v||"").toString().trim();}
+function parseDate(d){let p=d.split("-");return new Date(p[0],p[1]-1,p[2]);}
 
-    function getDisplayPrice(product) {
-      if (normalizeShowPrice(product.show_price) && cleanValue(product.price)) {
-        return `₹${product.price}`;
-      }
-      return "Ask me";
-    }
+function load(){
+fetch(sheetUrl).then(r=>r.json()).then(data=>{
+products=data.map(r=>({
+name:clean(r.name),
+category:clean(r.category).toLowerCase(),
+price:clean(r.price),
+date:parseDate(clean(r.date)),
+images:[clean(r.image),clean(r.image2),clean(r.image3),clean(r.image4)].filter(Boolean),
+tags:clean(r.tags).toLowerCase(),
+id:clean(r.id).toLowerCase(),
+status:clean(r.status).toLowerCase()
+})).filter(p=>p.status==="active");
 
-    function getAllImages(row) {
-      return [
-        cleanValue(row.image),
-        cleanValue(row.image2),
-        cleanValue(row.image3),
-        cleanValue(row.image4),
-        cleanValue(row.image5)
-      ].filter(Boolean);
-    }
+populateCategories();
+render();
+});
+}
 
-    function normalizeProducts(rows) {
-      return rows
-        .filter(row => cleanValue(row.status).toLowerCase() !== "inactive")
-        .map(row => ({
-          tags: cleanValue(row.tags),
-          id: cleanValue(row.id),
-          name: cleanValue(row.name),
-          category: normalizeCategory(row.category),
-          available_sizes: cleanValue(row.available_sizes),
-          price: cleanValue(row.price),
-          show_price: cleanValue(row.show_price),
-          image: cleanValue(row.image),
-          image2: cleanValue(row.image2),
-          image3: cleanValue(row.image3),
-          image4: cleanValue(row.image4),
-          image5: cleanValue(row.image5),
-          description: cleanValue(row.description),
-          stock: cleanValue(row.stock),
-          status: cleanValue(row.status),
-          whatsapp_text: cleanValue(row.whatsapp_text),
-          images: getAllImages(row)
-        }))
-        .filter(product => product.name || product.id);
-    }
+function populateCategories(){
+let cats=[...new Set(products.map(p=>p.category))];
+cats.forEach(c=>{
+let o=document.createElement("option");
+o.value=c;
+o.textContent=c;
+categoryFilter.appendChild(o);
+});
+}
 
-    function populateCategories() {
-      categoryFilter.innerHTML = '<option value="all">All Categories</option>';
-      const categories = [...new Set(products.map(p => p.category).filter(Boolean))].sort();
-      categories.forEach(cat => {
-        const option = document.createElement("option");
-        option.value = cat;
-        option.textContent = cat;
-        categoryFilter.appendChild(option);
-      });
-    }
+function matchDate(d,f){
+let t=new Date();
+if(f==="today") return d.toDateString()===t.toDateString();
+if(f==="week"){let w=new Date();w.setDate(t.getDate()-7);return d>=w;}
+if(f==="month"){let m=new Date();m.setMonth(t.getMonth()-1);return d>=m;}
+return true;
+}
 
-    function productMatchesSearch(product, searchText) {
-      if (!searchText) return true;
+function render(){
+let s=searchInput.value.toLowerCase();
+let c=categoryFilter.value;
+let d=dateFilter.value;
 
-      const haystack = [
-        product.tags,
-        product.id,
-        product.name,
-        product.category,
-        product.available_sizes,
-        product.description,
-        product.stock
-      ].join(" ").toLowerCase();
+filtered=products.filter(p=>
+(p.name.toLowerCase().includes(s)||p.tags.includes(s)||p.id.includes(s))
+&&(c==="all"||p.category===c)
+&&matchDate(p.date,d)
+);
 
-      return haystack.includes(searchText);
-    }
+result.innerText=`${filtered.length} products found`;
 
-    function getFilteredProducts() {
-      const searchText = searchInput.value.toLowerCase().trim();
-      const selectedCategory = categoryFilter.value;
+catalog.innerHTML="";
+if(filtered.length===0){catalog.innerHTML="No products found";return;}
 
-      return products.filter(product => {
-        const matchesSearch = productMatchesSearch(product, searchText);
-        const matchesCategory = selectedCategory === "all" || product.category === selectedCategory;
-        return matchesSearch && matchesCategory;
-      });
-    }
+filtered.forEach((p,i)=>{
+catalog.innerHTML+=`
+<div class="card" id="p${i}">
+<div class="image-wrap" onclick="openProduct(${i})">
+<img src="${p.images[0]}">
+${p.images.length>1?`<div class="badge">${p.images.length} images</div>`:""}
+<div class="overlay">
+<button onclick="event.stopPropagation();addWishlist(${i})">❤️</button>
+<button onclick="event.stopPropagation();addCart(${i})">🛒</button>
+</div>
+</div>
+<div class="card-content">
+<b>${p.name}</b>
+<div class="price">${p.price!="Ask me"?"₹"+p.price:"Ask me"}</div>
+<button class="btn" onclick="order(${i})">Order on WhatsApp</button>
+</div>
+</div>`;
+});
+}
 
-    function updateResultInfo() {
-      const count = filteredProducts.length;
-      resultInfo.textContent = count > 0 ? `${count} product${count > 1 ? "s" : ""} found` : "No products found";
-      viewAllBtn.style.display = count > 0 ? "inline-block" : "none";
-    }
+function openProduct(i){
+currentProductIndex=i;
+currentProduct=filtered[i];
+currentImages=currentProduct.images;
+currentIndex=0;
+showImage();
+}
 
-    function renderProducts() {
-      filteredProducts = getFilteredProducts();
-      catalog.innerHTML = "";
+function showImage(){
+modal.classList.add("active");
+modalImg.src=currentImages[currentIndex];
+}
 
-      updateResultInfo();
+function next(){currentIndex=(currentIndex+1)%currentImages.length;showImage();}
+function prev(){currentIndex=(currentIndex-1+currentImages.length)%currentImages.length;}
+function closeModal(){modal.classList.remove("active");}
 
-      if (filteredProducts.length === 0) {
-        catalog.innerHTML = '<div class="empty-message">No products found.</div>';
-        return;
-      }
+modalImg.onclick=()=>{
+closeModal();
+let el=document.getElementById("p"+currentProductIndex);
+el.scrollIntoView({behavior:"smooth"});
+el.classList.add("highlight");
+setTimeout(()=>el.classList.remove("highlight"),1500);
+};
 
-      filteredProducts.forEach((product, index) => {
-        const displayPrice = getDisplayPrice(product);
-        const primaryImage = product.images[0] || "";
-        const imageCount = product.images.length;
-        const availableSizesText = product.available_sizes ? `Available sizes: ${product.available_sizes}` : "";
+function viewAll(){
+currentImages=filtered.map(p=>p.images[0]);
+currentIndex=0;
+currentProduct=null;
+showImage();
+}
 
-        const card = document.createElement("div");
-        card.className = "card";
-        card.id = `product-${product.id || index}`;
+function order(i){
+currentProduct=filtered[i];
+sizeInput.value="";
+sizeModal.style.display="flex";
+}
 
-        card.innerHTML = `
-          <div class="image-wrap" ${primaryImage ? `onclick="openProductSlideshow(${index})"` : ""}>
-            ${
-              primaryImage
-                ? `<img src="${primaryImage}" alt="${product.name}" onerror="handleImageError(this)">`
-                : `<div class="image-fallback" style="display:block;">No image available</div>`
-            }
-            <div class="image-fallback">Image not available</div>
-            ${imageCount > 1 ? `<div class="image-count-badge">${imageCount} images</div>` : ""}
-          </div>
-          <div class="card-content">
-            <h3>${product.name || "Untitled Product"}</h3>
-            <div class="price">${displayPrice}</div>
-            <div class="desc">${product.description || ""}</div>
-            <div class="product-id">Product ID: ${product.id || "N/A"}</div>
-            ${availableSizesText ? `<div class="sizes-text">${availableSizesText}</div>` : ""}
-            <div class="stock">${product.stock || ""}</div>
-            <button class="btn" type="button" onclick="openSizeModal(${index})">Order on WhatsApp</button>
-          </div>
-        `;
-        catalog.appendChild(card);
-      });
-    }
+function closeSize(){
+sizeModal.style.display="none";
+}
 
-    function handleImageError(img) {
-      img.style.display = "none";
-      const fallback = img.parentElement.querySelector(".image-fallback");
-      if (fallback) {
-        fallback.style.display = "block";
-      }
-      img.parentElement.removeAttribute("onclick");
-      img.parentElement.style.cursor = "default";
-    }
+function confirmOrder(){
+let size=sizeInput.value||"Not specified";
+let msg=`Hi, I want to order ${currentProduct.name} Size ${size}`;
+window.open(`https://wa.me/918074656528?text=${encodeURIComponent(msg)}`);
+closeSize();
+}
 
-    function openSizeModal(index) {
-      currentOrderProduct = filteredProducts[index];
-      sizeInput.value = "";
-      sizeHelpText.textContent = currentOrderProduct.available_sizes
-        ? `Available sizes: ${currentOrderProduct.available_sizes}`
-        : "Enter your preferred size.";
-      sizeModal.classList.add("active");
-      document.body.style.overflow = "hidden";
-      setTimeout(() => sizeInput.focus(), 50);
-    }
+function addCart(i){
+cart.push(filtered[i]);
+cartBtn.innerText=`Cart (${cart.length})`;
+}
 
-    function closeSizeModal() {
-      sizeModal.classList.remove("active");
-      document.body.style.overflow = "";
-    }
+function addWishlist(i){
+wishlist.push(filtered[i]);
+alert("Added to wishlist ❤️");
+}
 
-    function continueToWhatsApp() {
-      if (!currentOrderProduct) return;
+searchInput.oninput=render;
+categoryFilter.onchange=render;
+dateFilter.onchange=render;
 
-      const enteredSize = sizeInput.value.trim();
-      const displayPrice = getDisplayPrice(currentOrderProduct);
-
-      const message = encodeURIComponent(
-        `${currentOrderProduct.whatsapp_text || "Hi, I want to order this product"}\n` +
-        `Product: ${currentOrderProduct.name || ""}\n` +
-        `Product ID: ${currentOrderProduct.id || ""}\n` +
-        `Category: ${currentOrderProduct.category || "Mixed"}\n` +
-        `Stock: ${currentOrderProduct.stock || "Available"}\n` +
-        `Price: ${displayPrice}\n` +
-        `Size: ${enteredSize || "Not specified"}`
-      );
-
-      window.open(`https://wa.me/${whatsappNumber}?text=${message}`, "_blank", "noopener,noreferrer");
-      closeSizeModal();
-    }
-
-    function buildSlideshowItemsFromProduct(product, filteredIndex) {
-      return product.images.map((img, idx) => ({
-        src: img,
-        caption:
-          `${product.name || "Product"}${product.id ? ` | ${product.id}` : ""}` +
-          `${product.images.length > 1 ? ` | Image ${idx + 1} of ${product.images.length}` : ""}`,
-        productId: product.id || "",
-        filteredIndex
-      }));
-    }
-
-    function buildSlideshowItemsFromFilteredProducts() {
-      const items = [];
-      filteredProducts.forEach((product, filteredIndex) => {
-        product.images.forEach((img, idx) => {
-          items.push({
-            src: img,
-            caption:
-              `${product.name || "Product"}${product.id ? ` | ${product.id}` : ""}` +
-              `${product.images.length > 1 ? ` | Image ${idx + 1} of ${product.images.length}` : ""}`,
-            productId: product.id || "",
-            filteredIndex
-          });
-        });
-      });
-      return items;
-    }
-
-    function openProductSlideshow(index) {
-      const product = filteredProducts[index];
-      slideshowImages = buildSlideshowItemsFromProduct(product, index);
-      currentSlideIndex = 0;
-      openSlideshow();
-    }
-
-    function openFilteredSlideshow() {
-      slideshowImages = buildSlideshowItemsFromFilteredProducts();
-      currentSlideIndex = 0;
-      openSlideshow();
-    }
-
-    function openSlideshow() {
-      if (!slideshowImages.length) return;
-      updateSlideshow();
-      slideshowModal.classList.add("active");
-      document.body.style.overflow = "hidden";
-    }
-
-    function closeSlideshow() {
-      slideshowModal.classList.remove("active");
-      document.body.style.overflow = "";
-    }
-
-    function updateSlideshow() {
-      if (!slideshowImages.length) return;
-      const current = slideshowImages[currentSlideIndex];
-      slideshowImage.src = current.src;
-      slideCaption.textContent = current.caption;
-    }
-
-    function showPrevSlide() {
-      if (!slideshowImages.length) return;
-      currentSlideIndex = (currentSlideIndex - 1 + slideshowImages.length) % slideshowImages.length;
-      updateSlideshow();
-    }
-
-    function showNextSlide() {
-      if (!slideshowImages.length) return;
-      currentSlideIndex = (currentSlideIndex + 1) % slideshowImages.length;
-      updateSlideshow();
-    }
-
-    function goToCurrentSlideProduct() {
-      if (!slideshowImages.length) return;
-      const current = slideshowImages[currentSlideIndex];
-      const targetId = current.productId ? `product-${current.productId}` : null;
-      const targetCard = targetId ? document.getElementById(targetId) : null;
-
-      closeSlideshow();
-
-      if (targetCard) {
-        targetCard.scrollIntoView({ behavior: "smooth", block: "center" });
-        targetCard.classList.add("highlight-card");
-
-        setTimeout(() => {
-          targetCard.classList.remove("highlight-card");
-        }, 1800);
-      }
-    }
-
-    async function loadProducts() {
-      try {
-        const response = await fetch(sheetUrl);
-        if (!response.ok) {
-          throw new Error("Could not load sheet data");
-        }
-
-        const rows = await response.json();
-        products = normalizeProducts(rows);
-
-        populateCategories();
-        renderProducts();
-      } catch (error) {
-        catalog.innerHTML = '<div class="error-message">Could not load products. Please check sheet setup.</div>';
-        console.error(error);
-      }
-    }
-
-    sizeModal.addEventListener("click", closeSizeModal);
-    cancelSizeBtn.addEventListener("click", closeSizeModal);
-    continueSizeBtn.addEventListener("click", continueToWhatsApp);
-
-    slideshowModal.addEventListener("click", closeSlideshow);
-    closeSlideshowBtn.addEventListener("click", closeSlideshow);
-    prevSlideBtn.addEventListener("click", showPrevSlide);
-    nextSlideBtn.addEventListener("click", showNextSlide);
-    slideshowImageBox.addEventListener("click", goToCurrentSlideProduct);
-
-    viewAllBtn.addEventListener("click", openFilteredSlideshow);
-
-    searchInput.addEventListener("input", renderProducts);
-    categoryFilter.addEventListener("change", renderProducts);
-
-    sizeInput.addEventListener("keydown", function(event) {
-      if (event.key === "Enter") {
-        continueToWhatsApp();
-      }
-    });
-
-    document.addEventListener("keydown", function(event) {
-      if (sizeModal.classList.contains("active") && event.key === "Escape") {
-        closeSizeModal();
-      }
-
-      if (slideshowModal.classList.contains("active")) {
-        if (event.key === "Escape") closeSlideshow();
-        if (event.key === "ArrowLeft") showPrevSlide();
-        if (event.key === "ArrowRight") showNextSlide();
-        if (event.key === "Enter") goToCurrentSlideProduct();
-      }
-    });
-
-    loadProducts();
-
-    window.handleImageError = handleImageError;
-    window.openSizeModal = openSizeModal;
-    window.openProductSlideshow = openProductSlideshow;
-  </script>
+load();
+</script>
 
 </body>
 </html>
