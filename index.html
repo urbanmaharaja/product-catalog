@@ -29,9 +29,7 @@ padding:12px;
 }
 
 @media(min-width:768px){
-.catalog{
-grid-template-columns:repeat(3,1fr);
-}
+.catalog{grid-template-columns:repeat(3,1fr);}
 }
 
 .card{background:#fff;border-radius:12px;overflow:hidden;}
@@ -62,7 +60,6 @@ grid-template-columns:repeat(3,1fr);
 
 <body>
 
-<!-- ✅ WORKING BANNER -->
 <div class="banner">
 <img id="bannerImg" src="https://raw.githubusercontent.com/urbanmaharaja/product-catalog/main/images/banner1.jpeg">
 </div>
@@ -131,6 +128,18 @@ const sheetUrl="https://opensheet.elk.sh/1gTommr2PH9eiEEdX1aCxSdVJ1RyN6aj07UsFIq
 
 let products=[],filtered=[],cart=[],wishlist=[];
 let currentImages=[],currentIndex=0,currentProduct=null,currentProductIndex=null;
+
+/* ✅ LOAD SAVED CART */
+cart = JSON.parse(localStorage.getItem("cart") || "[]");
+wishlist = JSON.parse(localStorage.getItem("wishlist") || "[]");
+
+window.addEventListener("load", ()=>{
+cartCount.innerText = cart.length;
+wishCount.innerText = wishlist.length;
+});
+
+function saveCart(){localStorage.setItem("cart", JSON.stringify(cart));}
+function saveWishlist(){localStorage.setItem("wishlist", JSON.stringify(wishlist));}
 
 function clean(v){return (v||"").toString().trim();}
 function parseDate(d){if(!d)return null;let p=d.split("-");return new Date(p[0],p[1]-1,p[2]);}
@@ -246,11 +255,11 @@ setTimeout(()=>el.classList.remove("highlight"),1500);
 }
 };
 
-function addCart(i){cart.push(filtered[i]);cartCount.innerText=cart.length;}
-function addWishlist(i){wishlist.push(filtered[i]);wishCount.innerText=wishlist.length;}
+function addCart(i){cart.push(filtered[i]);cartCount.innerText=cart.length;saveCart();}
+function addWishlist(i){wishlist.push(filtered[i]);wishCount.innerText=wishlist.length;saveWishlist();}
 
-function modalAddCart(){ if(currentProduct) cart.push(currentProduct); cartCount.innerText=cart.length;}
-function modalAddWishlist(){ if(currentProduct) wishlist.push(currentProduct); wishCount.innerText=wishlist.length;}
+function modalAddCart(){ if(currentProduct) cart.push(currentProduct); cartCount.innerText=cart.length; saveCart();}
+function modalAddWishlist(){ if(currentProduct) wishlist.push(currentProduct); wishCount.innerText=wishlist.length; saveWishlist();}
 
 function openCart(){openSummary("cart");}
 function openWishlist(){openSummary("wishlist");}
@@ -283,16 +292,13 @@ summaryItems.innerHTML+=`
 </div>`;
 });
 
-if(type==="cart"){
-total.innerText="Total: ₹"+totalPrice;
-}else{
-total.innerText="";
-}
+if(type==="cart"){total.innerText="Total: ₹"+totalPrice;}
+else{total.innerText="";}
 }
 
 function removeItem(type,i){
-if(type==="cart"){cart.splice(i,1);cartCount.innerText=cart.length;}
-else{wishlist.splice(i,1);wishCount.innerText=wishlist.length;}
+if(type==="cart"){cart.splice(i,1);cartCount.innerText=cart.length;saveCart();}
+else{wishlist.splice(i,1);wishCount.innerText=wishlist.length;saveWishlist();}
 openSummary(type);
 }
 
@@ -331,7 +337,7 @@ cart.forEach(p=>msg+=`${p.name} (${p.id}) - ₹${p.price}\n`);
 window.open(`https://wa.me/918074656528?text=${encodeURIComponent(msg)}`);
 }
 
-/* ✅ WORKING BANNER SLIDER */
+/* BANNER */
 const banners=[
 "https://raw.githubusercontent.com/urbanmaharaja/product-catalog/main/images/banner1.jpeg",
 "https://raw.githubusercontent.com/urbanmaharaja/product-catalog/main/images/banner2.jpeg",
@@ -345,12 +351,7 @@ setInterval(()=>{
 bIndex=(bIndex+1)%banners.length;
 let img=document.getElementById("bannerImg");
 img.style.opacity=0;
-
-setTimeout(()=>{
-img.src=banners[bIndex];
-img.style.opacity=1;
-},300);
-
+setTimeout(()=>{img.src=banners[bIndex];img.style.opacity=1;},300);
 },3000);
 
 searchInput.oninput=render;
